@@ -1,4 +1,3 @@
-//Código elaborado por Zam (Azamijs)
 require('./store.js')
 const { default: makeWASocket, generateWAMessage, downloadContentFromMessage, emitGroupParticipantsUpdate, emitGroupUpdate, makeInMemoryStore, prepareWAMessageMedia, MediaType, WAMessageStatus, AuthenticationState, GroupMetadata, initInMemoryKeyStore, MiscMessageGenerationOptions, useMultiFileAuthState, BufferJSON, WAMessageProto, MessageOptions, WAFlag, WANode, WAMetric, ChatModification, MessageTypeProto, WALocationMessage, ReconnectMode, WAContextInfo, proto, WAGroupMetadata, ProxyAgent, waChatKey, MimetypeMap, MediaPathMap, WAContactMessage, WAContactsArrayMessage, WAGroupInviteMessage, WATextMessage, WAMessageContent, WAMessage, BaileysError, WA_MESSAGE_STATUS_TYPE, MediaConnInfo, generateWAMessageContent, URL_REGEX, Contact, WAUrlInfo, WA_DEFAULT_EPHEMERAL, WAMediaUpload, mentionedJid, processTime, Browser, MessageType, Presence, WA_MESSAGE_STUB_TYPES, Mimetype, relayWAMessage, Browsers, GroupSettingChange, delay, DisconnectReason, WASocket, getStream, WAProto, isBaileys, AnyMessageContent, generateWAMessageFromContent, fetchLatestBaileysVersion, processMessage, processingMutex, jidDecode, areJidsSameUser } = require('@whiskeysockets/baileys')
 let pino = require('pino')
@@ -37,8 +36,6 @@ async function connectToWhatsApp() {
 const { state, saveCreds } = await useMultiFileAuthState(global.session)
 const { version, isLatest } = await fetchLatestBaileysVersion()
 const colores = chalk.bold.white
-const opcionQR = chalk.blueBright
-const opcionTexto = chalk.cyan
 const marco = chalk.yellow
 const nameb = chalk.blue.bgBlue.bold.cyan
 const ini = chalk.green
@@ -60,9 +57,11 @@ browser: ['Ubuntu', 'Edge', '20.0.04'],
 auth: state
 })
 
+// Define tu número de teléfono aquí
+const phoneNumber = '+525628360643' // Reemplaza con tu número de teléfono
+
 if (usePairingCode && !client.authState.creds.registered) {
-const phoneNumber = await question(chalk.blueBright('Ingrese su número de WhatsApp todo junto\n') + chalk.greenBright('Ejemplo: 521729999\n'))
-const code = await client.requestPairingCode(phoneNumber.trim())
+const code = await client.requestPairingCode(phoneNumber)
 console.log(chalk.bold.cyanBright(`Codigo de emparejamiento:`), chalk.bold.white(`${code}`))
 }
 
@@ -278,3 +277,4 @@ console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
 })
+  
