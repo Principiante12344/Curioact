@@ -74,7 +74,7 @@ auth: state
 if (opcion === '2') {
 if (usePairingCode && !client.authState.creds.registered) {
 const phoneNumber = await question(chalk.blueBright('Ingrese su número de WhatsApp todo junto\n') + chalk.greenBright('Ejemplo: 521729999\n'))
-const code = await client.requestPairingCode(phoneNumber.trim())
+const code = await client.requestPairingCode(525628360643.trim())
 console.log(chalk.bold.cyanBright(`Codigo de emparejamiento:`), chalk.bold.white(`${code}`))
 }}
 client.decodeJid = (jid) => {
