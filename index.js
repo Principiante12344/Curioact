@@ -1,5 +1,6 @@
+//Código elaborado por Zam (Azamijs)
 require('./store.js')
-const { default: makeWASocket, generateWAMessage, downloadContentFromMessage, emitGroupParticipantsUpdate, emitGroupUpdate, makeInMemoryStore, prepareWAMessageMedia, MediaType, WAMessageStatus, AuthenticationState, GroupMetadata, initInMemoryKeyStore, MiscMessageGenerationOptions, useMultiFileAuthState, BufferJSON, WAMessageProto, MessageOptions, WAFlag, WANode, WAMetric, ChatModification, MessageTypeProto, WALocationMessage, ReconnectMode, WAContextInfo, proto, WAGroupMetadata, ProxyAgent, waChatKey, MimetypeMap, MediaPathMap, WAContactMessage, WAContactsArrayMessage, WAGroupInviteMessage, WATextMessage, WAMessageContent, WAMessage, BaileysError, WA_MESSAGE_STATUS_TYPE, MediaConnInfo, generateWAMessageContent, URL_REGEX, Contact, WAUrlInfo, WA_DEFAULT_EPHEMERAL, WAMediaUpload, mentionedJid, processTime, Browser, MessageType, Presence, WA_MESSAGE_STUB_TYPES, Mimetype, relayWAMessage, Browsers, GroupSettingChange, delay, DisconnectReason, WASocket, getStream, WAProto, isBaileys, AnyMessageContent, generateWAMessageFromContent, fetchLatestBaileysVersion, processMessage, processingMutex, jidDecode, areJidsSameUser } = require('@whiskeysockets/baileys')
+const { default: makeWASocket,  generateWAMessage,  downloadContentFromMessage,  emitGroupParticipantsUpdate,  emitGroupUpdate,  makeInMemoryStore,  prepareWAMessageMedia, MediaType,  WAMessageStatus, AuthenticationState, GroupMetadata, initInMemoryKeyStore, MiscMessageGenerationOptions,  useMultiFileAuthState, BufferJSON,  WAMessageProto,  MessageOptions,	 WAFlag,  WANode,	 WAMetric,	 ChatModification,  MessageTypeProto,  WALocationMessage, ReconnectMode,  WAContextInfo,  proto,	 WAGroupMetadata,  ProxyAgent,	 waChatKey,  MimetypeMap,  MediaPathMap,  WAContactMessage,  WAContactsArrayMessage,  WAGroupInviteMessage,  WATextMessage,  WAMessageContent,  WAMessage,  BaileysError,  WA_MESSAGE_STATUS_TYPE,  MediaConnInfo,   generateWAMessageContent, URL_REGEX,  Contact, WAUrlInfo,  WA_DEFAULT_EPHEMERAL,  WAMediaUpload,  mentionedJid,  processTime,	 Browser,  MessageType,  Presence,  WA_MESSAGE_STUB_TYPES,  Mimetype,  relayWAMessage,	 Browsers,  GroupSettingChange,  delay,  DisconnectReason,  WASocket,  getStream,  WAProto,  isBaileys,  AnyMessageContent,  generateWAMessageFromContent, fetchLatestBaileysVersion,  processMessage,  processingMutex,  jidDecode,  areJidsSameUser } = require('@whiskeysockets/baileys')
 let pino = require('pino')
 const fs = require('fs')
 const axios = require('axios')
@@ -36,9 +37,14 @@ async function connectToWhatsApp() {
 const { state, saveCreds } = await useMultiFileAuthState(global.session)
 const { version, isLatest } = await fetchLatestBaileysVersion()
 const colores = chalk.bold.white
+const opcionQR = chalk.blueBright
+const opcionTexto = chalk.cyan
 const marco = chalk.yellow
 const nameb = chalk.blue.bgBlue.bold.cyan
+const methodCodeQR = process.argv.includes('qr')
+const MethodMobile = process.argv.includes('mobile')
 const ini = chalk.green
+let opcion
 const options = {
 font: 'simple3d', // Cambia a la fuente deseada (por ejemplo: console, block, simpleBlock, simple, 3d, simple3d, chrome, huge, shade, slick, grid, pallet, tiny)
 align: 'center',
@@ -46,25 +52,31 @@ colors: ['magenta', 'yellow'],
 }
 const custom = cfonts.render('Curiosity Bot MD', options)
 console.log(custom.string)
-
+if (!fs.existsSync(`./${session}/creds.json`) && !methodCodeQR) {
+while (true) {
+opcion = await question(marco('*************************\n') + nameb('CuriosityBot-MD\n') + marco('*************************\n') + colores('Seleccione una opción:\n') + opcionQR('1. Con código QR\n') + opcionTexto('2. Con código de emparejamiento\n'))
+if (opcion === '1' || opcion === '2') {
+break
+} else {
+console.log(chalk.redBright('Por favor, seleccione solo 1 o 2.'))
+}}
+opcion = opcion
+}
 console.info = () => {}
 const client = makeWASocket({
 version,  
 logger: pino({ level: 'silent'}),
-printQRInTerminal: false, // No mostrar el QR
+printQRInTerminal: opcion == '1' ? true : false,
 qrTimeout: 180000,
 browser: ['Ubuntu', 'Edge', '20.0.04'],
 auth: state
 })
-
-// Define tu número de teléfono aquí
-const phoneNumber = '+525628360643' // Reemplaza con tu número de teléfono
-
+if (opcion === '2') {
 if (usePairingCode && !client.authState.creds.registered) {
-const code = await client.requestPairingCode(phoneNumber)
+const phoneNumber = await question(chalk.blueBright('Ingrese su número de WhatsApp todo junto\n') + chalk.greenBright('Ejemplo: 521729999\n'))
+const code = await client.requestPairingCode(phoneNumber.trim())
 console.log(chalk.bold.cyanBright(`Codigo de emparejamiento:`), chalk.bold.white(`${code}`))
-}
-
+}}
 client.decodeJid = (jid) => {
 if (!jid) return jid
 if (/:\d+@/gi.test(jid)) {
@@ -277,4 +289,3 @@ console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
 })
-  
